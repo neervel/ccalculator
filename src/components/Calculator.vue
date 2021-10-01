@@ -19,12 +19,22 @@
         <input type="number" placeholder="0" min="0" step="1" v-model="item.gr">
       </div>
       <button class="calc-add" @click="addItem()">+</button>
-      <div class="calc-inputs-total">
+      <!-- <div class="calc-inputs-total">
         <span>Ккал: {{totalCcal}}</span>
         <span>Белки: {{totalBel}}</span>
         <span>Жиры: {{totalGir}}</span>
         <span>Углеводы: {{totalUgl}}</span>
         <span>Вес: {{totalWeight}}</span>
+      </div> -->
+      <div class="calc-inputs-weight">
+        <label for="total-weight">Вес готового блюда, гр</label>
+        <input id="total-weight" type="number" min="0" step="1" placeholder="0" v-model="readyWeight">
+      </div>
+      <div class="calc-inputs-total" v-show="readyWeight > 0">
+        <span>Ккал: {{ccal}}</span>
+        <span>Белки: {{belks}}</span>
+        <span>Жиры: {{gir}}</span>
+        <span>Углеводы: {{ugl}}</span>
       </div>
     </div>
     <div class="calc-result"></div>
@@ -47,57 +57,63 @@ export default {
           gr: '',
           id: 0
         }
-      ]
+      ],
+      readyWeight: ''
     }
   },
   computed: {
     totalWeight() {
       let sum = 0
-      this.products.forEach(item => {
-        sum += Number(item.gr)
-      })
-      return Number(sum)
+      this.products.forEach(item => { sum += Number(item.gr) })
+      return sum
     },
     totalBel() {
       let sum = 0
-      this.products.forEach(item => {
-        sum += Number(item.b)
-      })
-      return Number(sum)
+      this.products.forEach(item => { sum += Number(item.b) })
+      return sum
     },
     totalGir() {
       let sum = 0
-      this.products.forEach(item => {
-        sum += Number(item.g)
-      })
-      return Number(sum)
+      this.products.forEach(item => { sum += Number(item.g) })
+      return sum
     },
     totalUgl() {
       let sum = 0
-      this.products.forEach(item => {
-        sum += Number(item.u)
-      })
-      return Number(sum)
+      this.products.forEach(item => { sum += Number(item.u) })
+      return sum
     },
     totalCcal() {
       let sum = 0
-      this.products.forEach(item => {
-        sum += Number(item.k)
-      })
-      return Number(sum)
+      this.products.forEach(item => { sum += Number(item.k) })
+      return sum
+    },
+    coefficient() {
+      let coef = (Number(this.readyWeight) / this.totalWeight).toFixed(1)
+      return Number(coef)
+    },
+    ccal() {
+      return Number(this.totalCcal * this.coefficient).toFixed(0)
+    },
+    belks() {
+      return Number(this.totalBel * this.coefficient).toFixed(0)
+    },
+    gir() {
+      return Number(this.totalGir * this.coefficient).toFixed(0)
+    },
+    ugl() {
+      return Number(this.totalUgl * this.coefficient).toFixed(0)
     }
   },
   methods: {
     addItem() {
-      let i = this.products.length
       this.products.push({
         name: '',
-          k: '',
-          b: '',
-          g: '',
-          u: '',
-          gr: '',
-          id: i+1,
+        k: '',
+        b: '',
+        g: '',
+        u: '',
+        gr: '',
+        id: this.products.length + 1,
       })
     }
   }
@@ -119,19 +135,6 @@ export default {
           width: 100px
           display: inline-block
           margin: 0 15px
-      &-item
-        & input
-          width: 100px
-          display: inline-block
-          padding: 0
-          margin: 0
-          border: none
-          border-bottom: 1px solid #000
-          margin: 0 15px
-          padding: 5px 10px
-          font-size: 18px
-          &:focus
-            outline: none
       &-total
         margin-left: 130px
         & span

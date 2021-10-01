@@ -25,5 +25,18 @@ export default {
 
   body
     margin: 0
+  
+  input
+    width: 100px
+    display: inline-block
+    padding: 0
+    margin: 0
+    border: none
+    border-bottom: 1px solid #000
+    margin: 0 15px
+    padding: 5px 10px
+    font-size: 18px
+    &:focus
+      outline: none
 </style>
 
